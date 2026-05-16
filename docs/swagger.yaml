@@ -1,0 +1,241 @@
+openapi: 3.0.3
+info:
+  title: MasterWood Product API
+  version: 1.0.0
+  description: |
+    Documentacao Swagger para o endpoint consumido pelo app Barcode Reader.
+    A API aceita consulta por GET ou POST no mesmo recurso `rest.php`.
+
+servers:
+  - url: https://www.mw.sisvennet.com.br
+    description: Producao
+  - url: http://localhost:8080
+    description: Desenvolvimento local (usb-reverse / localhost)
+  - url: http://10.0.2.2:8080
+    description: Android emulator
+
+paths:
+  /rest.php:
+    get:
+      tags: [Produtos]
+      summary: Consulta produto por codigo de barras
+      description: |
+        Busca produto no servico ProductService/getProdutos.
+        O app envia os parametros em query string.
+      parameters:
+        - $ref: '#/components/parameters/ClassParam'
+        - $ref: '#/components/parameters/MethodParam'
+        - $ref: '#/components/parameters/CodigoParam'
+      responses:
+        '200':
+          description: Produto encontrado (ou estrutura retornada pelo backend)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductLookupResponse'
+              examples:
+                product-array:
+                  summary: Retorno como array
+                  value:
+                    - id: '123'
+                      referencia: 'MW-001'
+                      nome: 'PRANCHA PINUS'
+                      especie: 'PINUS'
+                      categoria: 'SERRADA'
+                      unidade: 'M3'
+                      estoque: '34'
+                wrapped-data:
+                  summary: Retorno dentro de data
+                  value:
+                    data:
+                      - id: '123'
+                        referencia: 'MW-001'
+                        nome: 'PRANCHA PINUS'
+                wrapped-result:
+                  summary: Retorno dentro de result
+                  value:
+                    result:
+                      id: '123'
+                      referencia: 'MW-001'
+                      nome: 'PRANCHA PINUS'
+        '400':
+          description: Parametros invalidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Requisicao negada pelo servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '405':
+          description: Metodo nao permitido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags: [Produtos]
+      summary: Consulta produto por codigo de barras (fallback)
+      description: |
+        Mesmo comportamento do GET, com parametros enviados como
+        `application/x-www-form-urlencoded`.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [class, method, codigo]
+              properties:
+                class:
+                  type: string
+                  default: ProductService
+                method:
+                  type: string
+                  default: getProdutos
+                codigo:
+                  type: string
+                  description: Codigo de barras lido
+      responses:
+        '200':
+          description: Produto encontrado (ou estrutura retornada pelo backend)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductLookupResponse'
+        '400':
+          description: Parametros invalidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Requisicao negada pelo servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '405':
+          description: Metodo nao permitido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  parameters:
+    ClassParam:
+      name: class
+      in: query
+      required: true
+      schema:
+        type: string
+        default: ProductService
+      description: Classe do backend PHP
+    MethodParam:
+      name: method
+      in: query
+      required: true
+      schema:
+        type: string
+        default: getProdutos
+      description: Metodo do backend PHP
+    CodigoParam:
+      name: codigo
+      in: query
+      required: true
+      schema:
+        type: string
+      description: Codigo de barras do produto
+
+  schemas:
+    ProductLike:
+      type: object
+      description: |
+        Estrutura comum retornada pelo backend. O app faz normalizacao de alias
+        para campos como referencia/nome/especie/categoria/unidade/estoque.
+      properties:
+        id:
+          type: string
+        referencia:
+          type: string
+        reference:
+          type: string
+        nome:
+          type: string
+        name:
+          type: string
+        especie:
+          type: string
+        especieName:
+          type: string
+        categoria:
+          type: string
+        categoryName:
+          type: string
+        unidade:
+          type: string
+        unitType:
+          type: string
+        estoque:
+          type: string
+        stock:
+          type: string
+      additionalProperties: true
+
+    ProductLookupResponse:
+      oneOf:
+        - type: array
+          items:
+            $ref: '#/components/schemas/ProductLike'
+        - $ref: '#/components/schemas/ProductLike'
+        - type: object
+          properties:
+            data:
+              oneOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/ProductLike'
+                - $ref: '#/components/schemas/ProductLike'
+            result:
+              oneOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/ProductLike'
+                - $ref: '#/components/schemas/ProductLike'
+            products:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductLike'
+            retorno:
+              oneOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/ProductLike'
+                - $ref: '#/components/schemas/ProductLike'
+          additionalProperties: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      additionalProperties: true
