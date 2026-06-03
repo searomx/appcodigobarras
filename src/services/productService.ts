@@ -11,6 +11,7 @@ const productFields: Array<keyof Product> = [
   'categoryName',
   'unitType',
   'stock',
+  'observation',
 ];
 
 function parseUnknownJson(value: unknown): unknown {
@@ -130,6 +131,7 @@ function normalizeProduct(product: Partial<Product> | null): Product {
         'tp_unidade',
       ],
       stock: ['stock', 'estoque', 'qt_estoque', 'saldo'],
+      observation: ['observation', 'observacao', 'obs', 'ds_observacao'],
     };
     const value = aliases[field]
       .map(alias => source?.[alias])

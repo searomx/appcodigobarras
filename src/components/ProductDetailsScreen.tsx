@@ -21,6 +21,7 @@ const labels: Array<[keyof Product, string]> = [
   ['categoryName', 'Categoria'],
   ['unitType', 'Tipo de unidade'],
   ['stock', 'Estoque'],
+  ['observation', 'Observação'],
 ];
 
 export function ProductDetailsScreen() {

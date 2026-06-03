@@ -6,6 +6,7 @@ export type Product = {
   categoryName: string;
   unitType: string;
   stock: string;
+  observation: string;
 };
 
 export type ProductApiResponse =
