@@ -131,11 +131,33 @@ function normalizeProduct(product: Partial<Product> | null): Product {
         'tp_unidade',
       ],
       stock: ['stock', 'estoque', 'qt_estoque', 'saldo'],
-      observation: ['observation', 'observacao', 'obs', 'ds_observacao'],
+      observation: [
+        'observation',
+        'observacao',
+        'observações',
+        'observacaoes',
+        'observacoes',
+        'obs',
+        'ds_observacao',
+        'ds_observacoes',
+      ],
     };
-    const value = aliases[field]
-      .map(alias => source?.[alias])
-      .find(item => item !== undefined && item !== null && item !== '');
+    const matchedAlias = aliases[field].find(alias => {
+      const item = source?.[alias];
+      return item !== undefined && item !== null && item !== '';
+    });
+
+    const value = matchedAlias ? source?.[matchedAlias] : undefined;
+
+    if (__DEV__ && field === 'observation') {
+      const knownKeys = source ? Object.keys(source) : [];
+      // Loga o alias exato usado para facilitar ajuste fino dos mapeamentos da API.
+      console.log(
+        '[productService] observation alias:',
+        matchedAlias ?? 'none',
+      );
+      console.log('[productService] payload keys:', knownKeys.join(', '));
+    }
 
     normalized[field] =
       value === undefined || value === null || value === ''
