@@ -46,6 +46,11 @@ metro.log
 metro.err.log
 gradle-*-bin.zip
 
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the

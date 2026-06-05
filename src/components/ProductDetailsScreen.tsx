@@ -53,7 +53,13 @@ export function ProductDetailsScreen() {
         ) : data ? (
           <View style={styles.form}>
             {labels.map(([field, label]) => (
-              <View key={field} style={styles.row}>
+              <View
+                key={field}
+                style={[
+                  styles.row,
+                  field === 'observation' && styles.observationRow,
+                ]}
+              >
                 <Text style={styles.label}>{label}</Text>
                 <Text style={styles.value}>{data[field]}</Text>
               </View>
@@ -109,6 +115,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#d8c7a6',
   },
+  observationRow: {
+    backgroundColor: 'rgba(255, 255, 0, 0.1)',
+  },
   label: {
     color: '#6b604e',
     fontSize: 12,
@@ -150,7 +159,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 6,
-    backgroundColor: '#2f6f62',
+    backgroundColor: '#35a4ff',
     paddingHorizontal: 18,
   },
   primaryButtonText: {

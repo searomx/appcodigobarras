@@ -1,7 +1,12 @@
 import { Platform } from 'react-native';
 
 const endpointPath = '/rest.php';
-const productionBaseUrl = 'https://www.masterwood.app.br' + endpointPath;
+const primaryProductionHost = 'www.masterwood.app.br';
+const secondaryProductionHost = 'www.masterwood.app.br';
+const productionBaseUrl = `https://${primaryProductionHost}${endpointPath}`;
+const productionFallbackBaseUrls = [
+  `https://${secondaryProductionHost}${endpointPath}`,
+];
 
 const androidDevApiPort = 8080;
 
@@ -62,7 +67,21 @@ function getAndroidFallbackBaseUrls(primaryBaseUrl: string) {
 
 function getFallbackBaseUrls(primaryBaseUrl: string) {
   if (Platform.OS === 'android' && __DEV__) {
-    return getAndroidFallbackBaseUrls(primaryBaseUrl);
+    return [
+      ...getAndroidFallbackBaseUrls(primaryBaseUrl),
+      productionBaseUrl,
+      ...productionFallbackBaseUrls,
+    ].filter(url => url !== primaryBaseUrl);
+  }
+
+  if (__DEV__) {
+    return [productionBaseUrl, ...productionFallbackBaseUrls].filter(
+      url => url !== primaryBaseUrl,
+    );
+  }
+
+  if (!__DEV__) {
+    return productionFallbackBaseUrls.filter(url => url !== primaryBaseUrl);
   }
 
   return [];

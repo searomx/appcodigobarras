@@ -273,6 +273,15 @@ export async function getProductByBarcode(code: string): Promise<Product> {
       );
     }
 
+    if (response.status === 503) {
+      throw new Error(
+        `HTTP 503: Servico de produto indisponivel no endpoint ${
+          response.url || apiConfig.baseUrl
+        }. ` +
+          'Verifique se o backend esta ativo e se o endpoint de producao esta correto.',
+      );
+    }
+
     throw new Error(`Falha ao consultar produto: HTTP ${response.status}`);
   }
 

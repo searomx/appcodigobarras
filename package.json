@@ -1,8 +1,13 @@
 {
-  "name": "BarcodeMW",
+  "name": "barcode-reader-mw",
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "app:run": "node scripts/run-app.mjs",
+    "app:development": "node scripts/run-app.mjs development",
+    "app:development:ios": "node scripts/run-app.mjs development ios",
+    "app:production": "node scripts/run-app.mjs production",
+    "app:production:ios": "node scripts/run-app.mjs production ios",
     "android": "react-native run-android",
     "android:dev": "react-native run-android --mode debug",
     "android:dev:no-packager": "react-native run-android --mode debug --no-packager",
@@ -19,6 +24,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.87.1",
+    "dotenv": "^17.4.2",
     "react": "19.2.3",
     "react-native": "0.85.3",
     "react-native-safe-area-context": "^5.5.2",
