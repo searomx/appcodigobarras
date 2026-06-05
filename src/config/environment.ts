@@ -1,19 +1,44 @@
 import { Platform } from 'react-native';
 
-const endpointPath = '/rest.php';
-const primaryProductionHost = 'www.masterwood.app.br';
-const secondaryProductionHost = 'www.masterwood.app.br';
+type Environment = Partial<{
+  API_ENDPOINT_PATH: string;
+  API_PRIMARY_PRODUCTION_HOST: string;
+  API_SECONDARY_PRODUCTION_HOST: string;
+  ANDROID_DEV_API_MODE: AndroidDevApiMode;
+  ANDROID_DEV_API_PORT: string;
+  ANDROID_DEV_WIFI_HOST: string;
+  PRODUCT_CODE_PARAM: string;
+  PRODUCT_SERVICE_CLASS: string;
+  PRODUCT_SERVICE_METHOD: string;
+}>;
+
+declare const process:
+  | {
+      env?: Environment;
+    }
+  | undefined;
+
+type AndroidDevApiMode = 'emulator' | 'wifi-device' | 'usb-reverse';
+
+const env = typeof process !== 'undefined' ? process.env ?? {} : {};
+
+const endpointPath = env.API_ENDPOINT_PATH || '/rest.php';
+const primaryProductionHost =
+  env.API_PRIMARY_PRODUCTION_HOST || 'www.masterwood.app.br';
+const secondaryProductionHost =
+  env.API_SECONDARY_PRODUCTION_HOST || 'www.masterwood.app.br';
 const productionBaseUrl = `https://${primaryProductionHost}${endpointPath}`;
 const productionFallbackBaseUrls = [
   `https://${secondaryProductionHost}${endpointPath}`,
 ];
 
-const androidDevApiPort = 8080;
+const androidDevApiPort = env.ANDROID_DEV_API_PORT
+  ? Number(env.ANDROID_DEV_API_PORT)
+  : 8080;
 
-type AndroidDevApiMode = 'emulator' | 'wifi-device' | 'usb-reverse';
-
-const androidDevApiMode: AndroidDevApiMode = 'usb-reverse';
-const androidDevWifiHost = '129.121.36.213';
+const androidDevApiMode: AndroidDevApiMode =
+  env.ANDROID_DEV_API_MODE || 'usb-reverse';
+const androidDevWifiHost = env.ANDROID_DEV_WIFI_HOST || '129.121.36.213';
 
 function buildUrl(host: string, port?: number) {
   const portSuffix = port && port !== 80 ? `:${port}` : '';
@@ -92,7 +117,7 @@ const baseUrl = __DEV__ ? getDevBaseUrl() : productionBaseUrl;
 export const apiConfig = {
   baseUrl,
   fallbackBaseUrls: getFallbackBaseUrls(baseUrl),
-  productCodeParam: 'codigo',
-  productServiceClass: 'ProductService',
-  productServiceMethod: 'getProdutos',
+  productCodeParam: env.PRODUCT_CODE_PARAM || 'codigo',
+  productServiceClass: env.PRODUCT_SERVICE_CLASS || 'ProductService',
+  productServiceMethod: env.PRODUCT_SERVICE_METHOD || 'getProdutos',
 };
