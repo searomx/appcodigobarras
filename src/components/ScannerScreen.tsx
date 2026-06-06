@@ -20,6 +20,9 @@ export function ScannerScreen() {
   const insets = useSafeAreaInsets();
   const device = useCameraDevice('back');
   const { hasPermission, requestPermission } = useCameraPermission();
+  const authenticatedUserName = useScanStore(
+    state => state.authenticatedUserName,
+  );
   const showDetails = useScanStore(state => state.showDetails);
   const hasScannedRef = useRef(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -91,7 +94,12 @@ export function ScannerScreen() {
         codeScanner={codeScanner}
       />
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
-        <Text style={styles.title}>Leitura de codigo</Text>
+        <View style={styles.headerTitleRow}>
+          <Text style={styles.title}>Leitura de codigo</Text>
+          {authenticatedUserName ? (
+            <Text style={styles.userLabel}>{authenticatedUserName}</Text>
+          ) : null}
+        </View>
         <Text style={styles.message}>Aponte para o codigo de barras 128A.</Text>
       </View>
       <View pointerEvents="none" style={styles.scanArea}>
@@ -130,10 +138,29 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
     backgroundColor: 'rgba(22, 53, 47, 0.78)',
   },
+  headerTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
   title: {
+    flexShrink: 1,
     color: '#fffaf0',
     fontSize: 22,
     fontWeight: '700',
+  },
+  userLabel: {
+    maxWidth: '46%',
+    borderRadius: 6,
+    backgroundColor: 'rgba(214, 181, 109, 0.22)',
+    color: '#fffaf0',
+    fontSize: 13,
+    fontWeight: '800',
+    overflow: 'hidden',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    textAlign: 'right',
   },
   message: {
     color: '#fffaf0',

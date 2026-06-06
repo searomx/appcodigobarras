@@ -7,6 +7,8 @@ type Environment = Partial<{
   ANDROID_DEV_API_MODE: AndroidDevApiMode;
   ANDROID_DEV_API_PORT: string;
   ANDROID_DEV_WIFI_HOST: string;
+  AUTH_SERVICE_CLASS: string;
+  AUTH_SERVICE_METHOD: string;
   PRODUCT_CODE_PARAM: string;
   PRODUCT_SERVICE_CLASS: string;
   PRODUCT_SERVICE_METHOD: string;
@@ -117,6 +119,8 @@ const baseUrl = __DEV__ ? getDevBaseUrl() : productionBaseUrl;
 export const apiConfig = {
   baseUrl,
   fallbackBaseUrls: getFallbackBaseUrls(baseUrl),
+  authServiceClass: env.AUTH_SERVICE_CLASS || 'AuthUserService',
+  authServiceMethod: env.AUTH_SERVICE_METHOD || 'getUser',
   productCodeParam: env.PRODUCT_CODE_PARAM || 'codigo',
   productServiceClass: env.PRODUCT_SERVICE_CLASS || 'ProductService',
   productServiceMethod: env.PRODUCT_SERVICE_METHOD || 'getProdutos',
