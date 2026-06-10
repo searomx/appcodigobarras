@@ -13,7 +13,7 @@
     "android:dev:no-packager": "react-native run-android --mode debug --no-packager",
     "android:prod": "react-native run-android --mode release",
     "build:android:debug": "react-native build-android --mode debug",
-    "build:android:release": "react-native build-android --mode release",
+    "build:android:release": "node scripts/build-android-release.mjs",
     "build:ios:release": "react-native build-ios --mode Release",
     "ios": "react-native run-ios",
     "lint": "eslint .",

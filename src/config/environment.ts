@@ -130,6 +130,7 @@ export const apiConfig = {
   productServiceMethod: env.PRODUCT_SERVICE_METHOD || 'getProdutos',
   logoutServiceClass: env.LOGOUT_SERVICE_CLASS || 'AuthUserService',
   logoutServiceMethod: env.LOGOUT_SERVICE_METHOD || 'setLogout',
-  logoutHmacSecret: env.LOGOUT_HMAC_SECRET || 'mw-mobile-logout-secret',
+  logoutHmacSecret:
+    env.LOGOUT_HMAC_SECRET || '0412e800f2f7bc8d7a77b8c832ac1b5d',
   logoutHmacAlgo: env.LOGOUT_HMAC_ALGO || 'HMAC-SHA256',
 };

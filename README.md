@@ -124,6 +124,8 @@ Android release:
 npm run build:android:release
 ```
 
+Esse script faz `clean`, regenera o `prefab` do VisionCamera e so entao roda o `assembleRelease`, evitando a falha intermitente de CMake/Prefab observada neste ambiente Windows.
+
 iOS release, em macOS com Xcode configurado:
 
 ```sh
