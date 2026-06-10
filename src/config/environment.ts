@@ -12,6 +12,10 @@ type Environment = Partial<{
   PRODUCT_CODE_PARAM: string;
   PRODUCT_SERVICE_CLASS: string;
   PRODUCT_SERVICE_METHOD: string;
+  LOGOUT_SERVICE_CLASS: string;
+  LOGOUT_SERVICE_METHOD: string;
+  LOGOUT_HMAC_SECRET: string;
+  LOGOUT_HMAC_ALGO: string;
 }>;
 
 declare const process:
@@ -124,4 +128,8 @@ export const apiConfig = {
   productCodeParam: env.PRODUCT_CODE_PARAM || 'codigo',
   productServiceClass: env.PRODUCT_SERVICE_CLASS || 'ProductService',
   productServiceMethod: env.PRODUCT_SERVICE_METHOD || 'getProdutos',
+  logoutServiceClass: env.LOGOUT_SERVICE_CLASS || 'AuthUserService',
+  logoutServiceMethod: env.LOGOUT_SERVICE_METHOD || 'setLogout',
+  logoutHmacSecret: env.LOGOUT_HMAC_SECRET || 'mw-mobile-logout-secret',
+  logoutHmacAlgo: env.LOGOUT_HMAC_ALGO || 'HMAC-SHA256',
 };

@@ -23,6 +23,7 @@ export function ScannerScreen() {
   const authenticatedUserName = useScanStore(
     state => state.authenticatedUserName,
   );
+  const logout = useScanStore(state => state.logout);
   const showDetails = useScanStore(state => state.showDetails);
   const hasScannedRef = useRef(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -100,6 +101,9 @@ export function ScannerScreen() {
             <Text style={styles.userLabel}>{authenticatedUserName}</Text>
           ) : null}
         </View>
+        <Pressable style={styles.logoutButton} onPress={() => logout('manual')}>
+          <Text style={styles.logoutButtonText}>Sair</Text>
+        </Pressable>
         <Text style={styles.message}>Aponte para o codigo de barras 128A.</Text>
       </View>
       <View pointerEvents="none" style={styles.scanArea}>
@@ -161,6 +165,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     textAlign: 'right',
+  },
+  logoutButton: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    minHeight: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 250, 240, 0.8)',
+    backgroundColor: 'rgba(22, 53, 47, 0.72)',
+    paddingHorizontal: 12,
+  },
+  logoutButtonText: {
+    color: '#fffaf0',
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
   },
   message: {
     color: '#fffaf0',

@@ -84,28 +84,41 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
     post:
-      tags: [Produtos]
-      summary: Consulta produto por codigo de barras (fallback)
+      tags: [Produtos, Autenticacao]
+      summary: Operacoes POST (consulta de produto e auditoria de logout)
       description: |
-        Mesmo comportamento do GET, com parametros enviados como
+        O endpoint aceita operacoes por POST com
         `application/x-www-form-urlencoded`.
+
+        1) Produto (fallback): `class=ProductService`, `method=getProdutos`, `codigo=<codigo>`
+        2) Logout (auditoria): `class=AuthUserService`, `method=setLogout` e campos de auditoria.
       requestBody:
         required: true
         content:
           application/x-www-form-urlencoded:
             schema:
-              type: object
-              required: [class, method, codigo]
-              properties:
-                class:
-                  type: string
-                  default: ProductService
-                method:
-                  type: string
-                  default: getProdutos
-                codigo:
-                  type: string
-                  description: Codigo de barras lido
+              oneOf:
+                - $ref: '#/components/schemas/ProductPostRequest'
+                - $ref: '#/components/schemas/LogoutAuditRequest'
+            examples:
+              produto:
+                summary: Consulta de produto
+                value:
+                  class: ProductService
+                  method: getProdutos
+                  codigo: '789123456'
+              logout:
+                summary: Auditoria de logout assinada
+                value:
+                  class: AuthUserService
+                  method: setLogout
+                  user: joao.silva
+                  login: joao.silva
+                  reason: manual
+                  platform: android
+                  logoutAt: '2026-06-09T14:10:12.232Z'
+                  sigAlg: HMAC-SHA256
+                  sig: 8f341d9c6f13f7f09df95d7f45f7ce9b25e0ad6b4cb1f90d12d91e2cda2e0b3a
       responses:
         '200':
           description: Produto encontrado (ou estrutura retornada pelo backend)
@@ -165,6 +178,52 @@ components:
       description: Codigo de barras do produto
 
   schemas:
+    ProductPostRequest:
+      type: object
+      required: [class, method, codigo]
+      properties:
+        class:
+          type: string
+          default: ProductService
+        method:
+          type: string
+          default: getProdutos
+        codigo:
+          type: string
+          description: Codigo de barras lido
+
+    LogoutAuditRequest:
+      type: object
+      required: [class, method, user, reason, platform, logoutAt, sigAlg, sig]
+      properties:
+        class:
+          type: string
+          default: AuthUserService
+        method:
+          type: string
+          default: setLogout
+        user:
+          type: string
+          description: Usuario autenticado no momento do logout
+        login:
+          type: string
+          description: Alias opcional de user para compatibilidade
+        reason:
+          type: string
+          description: Motivo do logout (manual, timeout, etc)
+        platform:
+          type: string
+          enum: [android, ios]
+        logoutAt:
+          type: string
+          format: date-time
+        sigAlg:
+          type: string
+          example: HMAC-SHA256
+        sig:
+          type: string
+          description: Assinatura HMAC do payload enviada pelo app
+
     ProductLike:
       type: object
       description: |
