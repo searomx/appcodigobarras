@@ -14,10 +14,10 @@ import { useScanStore } from '../store/scanStore';
 import type { Product } from '../types/product';
 
 const labels: Array<[keyof Product, string]> = [
-  ['id', 'ID'],
-  ['reference', 'Referencia'],
+  ['id', 'Código'],
+  ['reference', 'Referência'],
   ['name', 'Nome'],
-  ['especieName', 'Especie'],
+  ['especieName', 'Espécie'],
   ['categoryName', 'Categoria'],
   ['unitType', 'Tipo de unidade'],
   ['stock', 'Estoque'],
