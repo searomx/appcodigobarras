@@ -23,6 +23,7 @@ export function LoginScreen() {
   );
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -96,19 +97,35 @@ export function LoginScreen() {
 
           <View style={styles.field}>
             <Text style={styles.label}>Password</Text>
-            <TextInput
-              value={password}
-              onChangeText={setPassword}
-              autoCapitalize="none"
-              autoCorrect={false}
-              editable={!isSubmitting}
-              placeholder="Digite sua senha"
-              placeholderTextColor="#8b7b62"
-              returnKeyType="done"
-              secureTextEntry
-              style={styles.input}
-              onSubmitEditing={handleSubmit}
-            />
+            <View style={styles.passwordInputContainer}>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                autoCapitalize="none"
+                autoCorrect={false}
+                editable={!isSubmitting}
+                placeholder="Digite sua senha"
+                placeholderTextColor="#8b7b62"
+                returnKeyType="done"
+                secureTextEntry={!isPasswordVisible}
+                style={styles.passwordInput}
+                onSubmitEditing={handleSubmit}
+              />
+              <Pressable
+                accessibilityLabel={
+                  isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'
+                }
+                accessibilityRole="button"
+                disabled={isSubmitting}
+                hitSlop={8}
+                onPress={() => setIsPasswordVisible(current => !current)}
+                style={styles.passwordVisibilityButton}
+              >
+                <Text style={styles.passwordVisibilityText}>
+                  {isPasswordVisible ? 'Ocultar' : 'Mostrar'}
+                </Text>
+              </Pressable>
+            </View>
           </View>
 
           {errorMessage ? (
@@ -192,6 +209,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     paddingHorizontal: 14,
+  },
+  passwordInputContainer: {
+    minHeight: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#d8c7a6',
+    backgroundColor: '#f5f0e6',
+  },
+  passwordInput: {
+    flex: 1,
+    color: '#17231f',
+    fontSize: 16,
+    fontWeight: '600',
+    paddingHorizontal: 14,
+  },
+  passwordVisibilityButton: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+  },
+  passwordVisibilityText: {
+    color: '#1f6f91',
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
   },
   errorText: {
     color: '#8d2b20',
