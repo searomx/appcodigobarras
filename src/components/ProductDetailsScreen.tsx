@@ -16,6 +16,7 @@ import type { Product } from '../types/product';
 const labels: Array<[keyof Product, string]> = [
   ['id', 'Código'],
   ['reference', 'Referência'],
+  ['numberPallet', 'Número do Pallet'],
   ['name', 'Nome'],
   ['especieName', 'Espécie'],
   ['categoryName', 'Categoria'],

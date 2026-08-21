@@ -1,6 +1,7 @@
 export type Product = {
   id: string;
   reference: string;
+  numberPallet: string;
   name: string;
   especieName: string;
   categoryName: string;

@@ -6,6 +6,7 @@ const REQUEST_TIMEOUT_MS = 12000;
 const productFields: Array<keyof Product> = [
   'id',
   'reference',
+  'numberPallet',
   'name',
   'especieName',
   'categoryName',
@@ -103,10 +104,62 @@ function normalizeProduct(product: Partial<Product> | null): Product {
   const normalized = {} as Product;
   const source = product as (Partial<Product> & Record<string, unknown>) | null;
 
+  const findAliasKey = (fieldAliases: string[]) => {
+    if (!source) {
+      return undefined;
+    }
+
+    const directKey = fieldAliases.find(alias => {
+      const item = source[alias];
+      return item !== undefined && item !== null && item !== '';
+    });
+
+    if (directKey) {
+      return directKey;
+    }
+
+    const normalizedSourceKeys = Object.keys(source).map(key => ({
+      key,
+      normalized: key.toLowerCase().replace(/[^a-z0-9]/g, ''),
+    }));
+
+    const aliasMatch = fieldAliases
+      .map(alias => ({
+        alias,
+        normalized: alias.toLowerCase().replace(/[^a-z0-9]/g, ''),
+      }))
+      .find(({ normalized }) =>
+        normalizedSourceKeys.some(
+          candidate => candidate.normalized === normalized,
+        ),
+      );
+
+    if (!aliasMatch) {
+      return undefined;
+    }
+
+    const matchedSourceKey = normalizedSourceKeys.find(
+      candidate => candidate.normalized === aliasMatch.normalized,
+    )?.key;
+
+    return matchedSourceKey;
+  };
+
   productFields.forEach(field => {
     const aliases: Record<keyof Product, string[]> = {
       id: ['id', 'cd_produto', 'codigo_produto'],
       reference: ['reference', 'referencia', 'codigo', 'code', 'cd_produto'],
+      numberPallet: [
+        'numberPallet',
+        'numeroPallet',
+        'numpallet',
+        'numero_pallet',
+        'num_pallet',
+        'nro_pallet',
+        'nr_pallet',
+        'pallet',
+        'palletNumber',
+      ],
       name: ['name', 'nome', 'ds_produto', 'descricao', 'description'],
       especieName: [
         'especie',
@@ -142,10 +195,7 @@ function normalizeProduct(product: Partial<Product> | null): Product {
         'ds_observacoes',
       ],
     };
-    const matchedAlias = aliases[field].find(alias => {
-      const item = source?.[alias];
-      return item !== undefined && item !== null && item !== '';
-    });
+    const matchedAlias = findAliasKey(aliases[field]);
 
     const value = matchedAlias ? source?.[matchedAlias] : undefined;
 
