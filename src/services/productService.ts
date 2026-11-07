@@ -312,17 +312,15 @@ export async function getProductByBarcode(code: string): Promise<Product> {
     throw error;
   }
 
-  if (!response.ok) {
-    if (response.status === 403) {
+    if (!response.ok) {
+    const errorBody = await response.text().catch(() => '');
+    if (response.status === 500) {
       throw new Error(
-        'HTTP 403: Apache negou a requisicao. ' +
-          'Configure o Apache/XAMPP para ouvir na porta 8080 ' +
-          '(httpd.conf: Listen 8080) e execute: ' +
-          'adb reverse tcp:8080 tcp:8080. ' +
-          'A porta 80 nao pode ser usada com adb reverse sem root.',
+        `Falha ao consultar produto: HTTP 500 (Erro interno no servidor). ` +
+        (errorBody ? `Detalhes: ${errorBody.slice(0, 300)}` : '')
       );
     }
-
+    // ...
     if (response.status === 503) {
       throw new Error(
         `HTTP 503: Servico de produto indisponivel no endpoint ${

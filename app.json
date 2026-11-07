@@ -1,4 +1,9 @@
 {
   "name": "BarcodeReader",
-  "displayName": "BarcodeReader"
+  "displayName": "BarcodeReader",
+  "extra": {
+    "eas": {
+      "projectId": "6af40a15-ab81-4134-8848-fc94e50d9489"
+    }
+  }
 }
